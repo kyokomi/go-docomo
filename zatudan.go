@@ -41,7 +41,7 @@ func (d *DocomoClient) SendZatsudan(nickname, message string) ([]byte, error) {
 		return nil, err
 	}
 
-	res, err := d.PostJSON(DIALOGUE_URL, bytes.NewReader(data))
+	res, err := d.post(DIALOGUE_URL, "application/json", bytes.NewReader(data))
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,6 @@ func (d *DocomoClient) SendZatsudan(nickname, message string) ([]byte, error) {
 			return nil, err
 		}
 		d.context = resMap["context"]
-		fmt.Println("context = ", d.context)
 	} else {
 		fmt.Println(string(resData))
 	}
