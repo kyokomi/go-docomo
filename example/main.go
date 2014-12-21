@@ -27,7 +27,7 @@ func main() {
 	}
 
 	if res, err := d.SendQA(&docomo.QARequest{
-		QAText: "今日の東京の天気は？",
+		QAText: "プラネテューヌの女神は誰",
 	}); err != nil {
 		log.Fatalln(err)
 	} else {
