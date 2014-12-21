@@ -3,13 +3,12 @@ package docomo
 import (
 	"net/http"
 	"io"
+	"net/url"
+	"fmt"
 )
 
 const (
 	DOMAIN_URL = "https://api.apigw.smt.docomo.ne.jp"
-	// docomoURL
-	DIALOGUE_URL = "/dialogue/v1/dialogue"
-	IMAGE_URL = "/characterRecognition/v1/document"
 )
 
 type DocomoClient struct {
@@ -35,4 +34,14 @@ func (d *DocomoClient) createURL(docomoURL string) string {
 
 func (d *DocomoClient) post(docomoURL string, bodyType string, body io.Reader) (resp *http.Response, err error) {
 	return d.client.Post(d.createURL(docomoURL), bodyType, body)
+}
+
+func (d *DocomoClient) get(docomoURL string, query url.Values) (resp *http.Response, err error) {
+
+	u := d.createURL(docomoURL)
+	for key, value := range query {
+		u += "&" + key + "=" + url.QueryEscape(value[0])
+	}
+	fmt.Println(u)
+	return d.client.Get(u)
 }
