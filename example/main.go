@@ -20,14 +20,16 @@ func main() {
 
 	d := docomo.New(apiKey)
 
-	if res, err := d.SendZatsudan(nickName, message); err != nil {
+	// 雑談API
+	if res, err := d.SendZatsudan(nickName, message, true); err != nil {
 		log.Fatalln(err)
 	} else {
-		log.Println(string(res))
+		log.Printf("%+v\n", res)
 	}
 
+	// 知識Q&A
 	if res, err := d.SendQA(&docomo.QARequest{
-		QAText: "プラネテューヌの女神は誰",
+		QAText: "三つ峠の標高は？",
 	}); err != nil {
 		log.Fatalln(err)
 	} else {

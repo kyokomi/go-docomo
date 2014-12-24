@@ -1,11 +1,11 @@
 package docomo
 
 import (
+	"bytes"
 	"encoding/json"
-	"fmt"
+	"errors"
 	"io/ioutil"
 	"net/http"
-	"bytes"
 )
 
 const (
@@ -31,15 +31,32 @@ type DialogueRequest struct {
 	CharactorID    *int    `json:"t"`
 }
 
-func (d *DocomoClient) SendZatsudan(nickname, message string) ([]byte, error) {
-	return d.sendZatsudan(DialogueRequest{
-		Utt:     &message,
-		Context: &d.context,
-		Nickname: &nickname,
-	})
+// ZatsudanResponse 雑談APIの結果
+type ZatsudanResponse struct {
+	Context string `json:"context"`
+	Da      string `json:"da"`
+	Mode    string `json:"mode"`
+	Utt     string `json:"utt"`
+	Yomi    string `json:"yomi"`
+	// error時
+	RequestError struct {
+		PolicyException struct {
+			MessageId string `json:"messageId"`
+			Text      string `json:"text"`
+		} `json:"policyException"`
+	} `json:"requestError"`
 }
 
-func (d *DocomoClient) sendZatsudan(b DialogueRequest) ([]byte, error) {
+// SendZatsudan 雑談APIに送信。Contextを更新する
+func (d *DocomoClient) SendZatsudan(nickname, message string, refreshContext bool) (*ZatsudanResponse, error) {
+	return d.sendZatsudan(DialogueRequest{
+		Utt:      &message,
+		Context:  &d.context,
+		Nickname: &nickname,
+	}, refreshContext)
+}
+
+func (d *DocomoClient) sendZatsudan(b DialogueRequest, refreshContext bool) (*ZatsudanResponse, error) {
 
 	var data []byte
 	var err error
@@ -57,15 +74,18 @@ func (d *DocomoClient) sendZatsudan(b DialogueRequest) ([]byte, error) {
 		return nil, err
 	}
 
-	if res.StatusCode == http.StatusOK {
-		var resMap map[string]string
-		if err := json.Unmarshal(resData, &resMap); err != nil {
-			return nil, err
-		}
-		d.context = resMap["context"]
-	} else {
-		fmt.Println(string(resData))
+	var zatsudanRes ZatsudanResponse
+	if err := json.Unmarshal(resData, &zatsudanRes); err != nil {
+		return nil, err
 	}
 
-	return resData, nil
+	if res.StatusCode == http.StatusOK {
+		if refreshContext {
+			d.context = zatsudanRes.Context
+		}
+	} else {
+		return nil, errors.New("zatsudan error response: " + zatsudanRes.RequestError.PolicyException.Text)
+	}
+
+	return &zatsudanRes, nil
 }
