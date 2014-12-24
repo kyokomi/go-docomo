@@ -9,19 +9,22 @@ import (
 )
 
 const (
-	QA_URL = "/knowledgeQA/v1/ask"
+	// QaURL docomoAPIの知識Q&Aのmethod
+	QaURL = "/knowledgeQA/v1/ask"
 )
 
+// QARequest 知識Q&Aのリクエスト
 type QARequest struct {
 	QAText string `json:"q"`
 }
 
+// QAResponse 知識Q&Aのレスポンス
 type QAResponse struct {
 	Code    string `json:"code"`
 	Answers []struct {
 		AnswerText string `json:"answerText"`
 		LinkText   string `json:"linkText"`
-		LinkUrl    string `json:"linkUrl"`
+		LinkURL    string `json:"linkUrl"`
 		Rank       string `json:"rank"`
 	} `json:"answers"`
 	Message struct {
@@ -30,11 +33,12 @@ type QAResponse struct {
 	} `json:"message"`
 }
 
+// SendQA docomoAPIを呼び出して結果を返す
 func (d *DocomoClient) SendQA(req *QARequest) (*QAResponse, error) {
 
 	val := url.Values{}
 	val.Set("q", req.QAText)
-	res, err := d.get(QA_URL, val)
+	res, err := d.get(QaURL, val)
 	if err != nil {
 		return nil, err
 	}

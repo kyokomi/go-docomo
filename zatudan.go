@@ -9,9 +9,11 @@ import (
 )
 
 const (
-	DIALOGUE_URL = "/dialogue/v1/dialogue"
+	// DialogueURL docomoAPIの雑談APIのmethod
+	DialogueURL = "/dialogue/v1/dialogue"
 )
 
+// DialogueRequest 雑談APIのリクエスト
 // Mode dialog or srtr
 // CharactorID なし:デフォルト 20:関西弁 30:あかちゃん
 type DialogueRequest struct {
@@ -31,7 +33,7 @@ type DialogueRequest struct {
 	CharactorID    *int    `json:"t"`
 }
 
-// ZatsudanResponse 雑談APIの結果
+// ZatsudanResponse 雑談APIのレスポンス
 type ZatsudanResponse struct {
 	Context string `json:"context"`
 	Da      string `json:"da"`
@@ -41,7 +43,7 @@ type ZatsudanResponse struct {
 	// error時
 	RequestError struct {
 		PolicyException struct {
-			MessageId string `json:"messageId"`
+			MessageID string `json:"messageId"`
 			Text      string `json:"text"`
 		} `json:"policyException"`
 	} `json:"requestError"`
@@ -64,7 +66,7 @@ func (d *DocomoClient) sendZatsudan(b DialogueRequest, refreshContext bool) (*Za
 		return nil, err
 	}
 
-	res, err := d.post(DIALOGUE_URL, "application/json", bytes.NewReader(data))
+	res, err := d.post(DialogueURL, "application/json", bytes.NewReader(data))
 	if err != nil {
 		return nil, err
 	}

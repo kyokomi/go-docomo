@@ -7,9 +7,11 @@ import (
 )
 
 const (
-	DOMAIN_URL = "https://api.apigw.smt.docomo.ne.jp"
+	// DomainURL DocomoAPIのhost
+	DomainURL = "https://api.apigw.smt.docomo.ne.jp"
 )
 
+// DocomoClient DocomoAPIへのpostやgetを行うクライアント
 type DocomoClient struct {
 	client  *http.Client
 	domain  string
@@ -17,11 +19,12 @@ type DocomoClient struct {
 	context string
 }
 
+// New DocomoClientを生成する
 func New(apiKey string) *DocomoClient {
 
 	return &DocomoClient{
 		client:  http.DefaultClient,
-		domain:  DOMAIN_URL,
+		domain:  DomainURL,
 		apiKey:  apiKey,
 		context: "",
 	}
