@@ -2,9 +2,9 @@ package docomo
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
-	"errors"
 	"net/url"
 )
 
@@ -13,7 +13,7 @@ const (
 )
 
 type QARequest struct {
-	QAText string  `json:"q"`
+	QAText string `json:"q"`
 }
 
 type QAResponse struct {
@@ -54,4 +54,3 @@ func (d *DocomoClient) SendQA(req *QARequest) (*QAResponse, error) {
 	}
 	return &q, nil
 }
-
