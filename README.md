@@ -1,6 +1,8 @@
 go-docomo
 =========
 
+[![GoDoc](https://godoc.org/github.com/kyokomi/go-docomo?status.svg)](https://godoc.org/github.com/kyokomi/go-docomo)
+
 go-docomo is a Go client library for accessing the [docomo API](https://dev.smt.docomo.ne.jp/).
 
 ## Usage
