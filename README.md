@@ -39,8 +39,14 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	log.Println("%s", res.Utt)
+	log.Printf("%s\n", res.Utt)
 }
+```
+
+実行結果
+
+```
+2014/12/24 11:52:11 ちわ
 ```
 
 ### 知識Q&A API
@@ -75,9 +81,16 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	log.Println("%s", res.Answers[0].AnswerText)
+	log.Printf("%s\n", res.Answers[0].AnswerText)
 }
 ```
+
+実行結果
+
+```
+2014/12/24 11:52:11 1,785m
+```
+
 
 ## License
 

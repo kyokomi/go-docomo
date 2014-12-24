@@ -28,7 +28,7 @@ func main() {
 	if res, err := d.SendZatsudan(&zatsu, true); err != nil {
 		log.Fatalln(err)
 	} else {
-		log.Printf("%+v\n", res)
+		log.Printf("%s\n", res.Utt)
 	}
 
 	// 知識Q&A
@@ -37,6 +37,6 @@ func main() {
 	}); err != nil {
 		log.Fatalln(err)
 	} else {
-		log.Printf("%+v\n", res)
+		log.Printf("%s\n", res.Answers[0].AnswerText)
 	}
 }
