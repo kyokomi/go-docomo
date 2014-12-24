@@ -1,10 +1,9 @@
 package docomo
 
 import (
-	"net/http"
 	"io"
+	"net/http"
 	"net/url"
-	"fmt"
 )
 
 const (
@@ -42,6 +41,5 @@ func (d *DocomoClient) get(docomoURL string, query url.Values) (resp *http.Respo
 	for key, value := range query {
 		u += "&" + key + "=" + url.QueryEscape(value[0])
 	}
-	fmt.Println(u)
 	return d.client.Get(u)
 }
