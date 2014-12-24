@@ -49,16 +49,14 @@ type ZatsudanResponse struct {
 	} `json:"requestError"`
 }
 
-// SendZatsudan 雑談APIに送信。Contextを更新する
-func (d *DocomoClient) SendZatsudan(nickname, message string, refreshContext bool) (*ZatsudanResponse, error) {
-	return d.sendZatsudan(DialogueRequest{
-		Utt:      &message,
-		Context:  &d.context,
-		Nickname: &nickname,
-	}, refreshContext)
-}
+// SendZatsudan 雑談APIに送信
+// refreshContextがtrueの場合、DocomoClientのContextを更新する
+func (d *DocomoClient) SendZatsudan(b *DialogueRequest, refreshContext bool) (*ZatsudanResponse, error) {
 
-func (d *DocomoClient) sendZatsudan(b DialogueRequest, refreshContext bool) (*ZatsudanResponse, error) {
+	// context有効の場合、clientで保持しているcontextを設定する
+	if refreshContext {
+		b.Context = &d.context
+	}
 
 	var data []byte
 	var err error

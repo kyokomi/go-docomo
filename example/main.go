@@ -21,7 +21,11 @@ func main() {
 	d := docomo.New(apiKey)
 
 	// 雑談API
-	if res, err := d.SendZatsudan(nickName, message, true); err != nil {
+	zatsu := docomo.DialogueRequest{
+		Nickname: &nickName,
+		Utt: &message,
+	}
+	if res, err := d.SendZatsudan(&zatsu, true); err != nil {
 		log.Fatalln(err)
 	} else {
 		log.Printf("%+v\n", res)
