@@ -7,13 +7,17 @@ import (
 	docomo "github.com/kyokomi/go-docomo"
 )
 
-func main() {
-	var nickName, message, apiKey string
+var nickName, message, apiKey, qa string
+
+func init() {
 	flag.StringVar(&nickName, "nickName", "foo", "ニックネーム")
 	flag.StringVar(&message, "message", "こんにちわ", "雑談のメッセージ")
 	flag.StringVar(&apiKey, "APIKEY", "", "docomo developerで登録したAPIKEYをして下さい")
+	flag.StringVar(&qa, "qa", "三つ峠の標高は？", "質問内容を指定してください")
 	flag.Parse()
+}
 
+func main() {
 	if apiKey == "" {
 		log.Fatalln("APIKEYを指定して下さい")
 	}
@@ -23,20 +27,25 @@ func main() {
 	// 雑談API
 	zatsu := docomo.DialogueRequest{
 		Nickname: &nickName,
-		Utt: &message,
+		Utt:      &message,
 	}
-	if res, err := d.SendZatsudan(&zatsu, true); err != nil {
+	if res, err := d.SendZatsudan(zatsu, true); err != nil {
 		log.Fatalln(err)
 	} else {
 		log.Printf("%s\n", res.Utt)
 	}
 
 	// 知識Q&A
-	if res, err := d.SendQA(&docomo.QARequest{
-		QAText: "三つ峠の標高は？",
-	}); err != nil {
+	qaReq := docomo.QARequest{
+		QAText: qa,
+	}
+	if res, err := d.SendQA(qaReq); err != nil {
 		log.Fatalln(err)
 	} else {
-		log.Printf("%s\n", res.Answers[0].AnswerText)
+		if !res.Success() {
+			log.Println("質問の答えがわかりません")
+		} else {
+			log.Printf("%s\n", res.Answers[0].AnswerText)
+		}
 	}
 }

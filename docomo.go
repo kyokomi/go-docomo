@@ -21,13 +21,13 @@ type DocomoClient struct {
 
 // New DocomoClientを生成する
 func New(apiKey string) *DocomoClient {
+	c := DocomoClient{}
+	c.client = http.DefaultClient
+	c.domain = DomainURL
+	c.apiKey = apiKey
+	c.context = ""
 
-	return &DocomoClient{
-		client:  http.DefaultClient,
-		domain:  DomainURL,
-		apiKey:  apiKey,
-		context: "",
-	}
+	return &c
 }
 
 func (d *DocomoClient) createURL(docomoURL string) string {

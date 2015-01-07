@@ -51,16 +51,16 @@ type ZatsudanResponse struct {
 
 // SendZatsudan 雑談APIに送信
 // refreshContextがtrueの場合、DocomoClientのContextを更新する
-func (d *DocomoClient) SendZatsudan(b *DialogueRequest, refreshContext bool) (*ZatsudanResponse, error) {
+func (d *DocomoClient) SendZatsudan(req DialogueRequest, refreshContext bool) (*ZatsudanResponse, error) {
 
 	// context有効の場合、clientで保持しているcontextを設定する
-	if refreshContext {
-		b.Context = &d.context
+	if refreshContext && req.Context != nil {
+		d.context = *req.Context
 	}
 
 	var data []byte
 	var err error
-	if data, err = json.Marshal(b); err != nil {
+	if data, err = json.Marshal(req); err != nil {
 		return nil, err
 	}
 
