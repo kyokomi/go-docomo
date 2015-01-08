@@ -20,6 +20,7 @@ type DocomoClient struct {
 	apiKey  string
 	context string
 
+	Trend       *TrendService
 	KnowledgeQA *KnowledgeQAService
 	Dialogue    *DialogueService
 }
@@ -32,6 +33,7 @@ func New(apiKey string) *DocomoClient {
 	c.apiKey = apiKey
 	c.context = ""
 
+	c.Trend = &TrendService{client: c}
 	c.KnowledgeQA = &KnowledgeQAService{client: c}
 	c.Dialogue = &DialogueService{client: c}
 
