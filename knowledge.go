@@ -1,16 +1,14 @@
 package docomo
 
 import (
-	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 )
 
 const (
-	// QaURL docomoAPIの知識Q&Aのmethod
-	QaURL = "/knowledgeQA/v1/ask"
+	// KnowledgeQAURL docomoAPIの知識Q&Aのmethod
+	KnowledgeQAURL = "/knowledgeQA/v1/ask"
 )
 
 // ResponseCode 知識Q&Aのレスポンスコード
@@ -23,13 +21,18 @@ const (
 	NoResponseCode ResponseCode = "S020011"
 )
 
-// QARequest 知識Q&Aのリクエスト
-type QARequest struct {
+// KnowledgeQAService API docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=6
+type KnowledgeQAService struct {
+	client *DocomoClient
+}
+
+// KnowledgeQARequest 知識Q&Aのリクエスト
+type KnowledgeQARequest struct {
 	QAText string `json:"q"`
 }
 
-// QAResponse 知識Q&Aのレスポンス
-type QAResponse struct {
+// KnowledgeQAResponse 知識Q&Aのレスポンス
+type KnowledgeQAResponse struct {
 	Code    ResponseCode `json:"code"`
 	Answers []struct {
 		AnswerText string `json:"answerText"`
@@ -44,32 +47,28 @@ type QAResponse struct {
 }
 
 // Success 質問成功
-func (q QAResponse) Success() bool {
+func (q KnowledgeQAResponse) Success() bool {
 	return q.Code == OkResponseCode
 }
 
-// SendQA docomoAPIを呼び出して結果を返す
-func (d *DocomoClient) SendQA(req QARequest) (*QAResponse, error) {
+// Get docomoAPIを呼び出して結果を返す
+func (q *KnowledgeQAService) Get(req KnowledgeQARequest) (*KnowledgeQAResponse, error) {
 
 	val := url.Values{}
 	val.Set("q", req.QAText)
-	res, err := d.get(QaURL, val)
-	if err != nil {
-		return nil, err
-	}
-
-	resData, err := ioutil.ReadAll(res.Body)
+	res, err := q.client.get(KnowledgeQAURL, val)
 	if err != nil {
 		return nil, err
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return nil, errors.New("response error : " + string(resData))
+		return nil, errors.New("response error code: " + res.Status)
 	}
 
-	var q QAResponse
-	if err := json.Unmarshal(resData, &q); err != nil {
+	var qaRes KnowledgeQAResponse
+	if err := responseUnmarshal(res.Body, &qaRes); err != nil {
 		return nil, err
 	}
-	return &q, nil
+
+	return &qaRes, nil
 }

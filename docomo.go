@@ -1,7 +1,9 @@
 package docomo
 
 import (
+	"encoding/json"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -17,17 +19,23 @@ type DocomoClient struct {
 	domain  string
 	apiKey  string
 	context string
+
+	KnowledgeQA *KnowledgeQAService
+	Dialogue    *DialogueService
 }
 
 // New DocomoClientを生成する
 func New(apiKey string) *DocomoClient {
-	c := DocomoClient{}
+	c := &DocomoClient{}
 	c.client = http.DefaultClient
 	c.domain = DomainURL
 	c.apiKey = apiKey
 	c.context = ""
 
-	return &c
+	c.KnowledgeQA = &KnowledgeQAService{client: c}
+	c.Dialogue = &DialogueService{client: c}
+
+	return c
 }
 
 func (d *DocomoClient) createURL(docomoURL string) string {
@@ -45,4 +53,16 @@ func (d *DocomoClient) get(docomoURL string, query url.Values) (resp *http.Respo
 		u += "&" + key + "=" + url.QueryEscape(value[0])
 	}
 	return d.client.Get(u)
+}
+
+func responseUnmarshal(body io.ReadCloser, v interface{}) error {
+	data, err := ioutil.ReadAll(body)
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(data, v); err != nil {
+		return err
+	}
+	return nil
 }
