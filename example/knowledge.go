@@ -12,7 +12,7 @@ import (
 var apiKey, qa string
 
 func init() {
-	flag.StringVar(&apiKey, "APIKEY", os.Getenv("DOCOMO_APIKEY"), "docomo developerで登録したAPIKEYをして下さい")
+	flag.StringVar(&apiKey, "APIKEY", os.Getenv("DOCOMO_APIKEY"), "docomo developerで登録したAPIKEY")
 	flag.StringVar(&qa, "qa", "三つ峠の標高は？", "質問内容を指定してください")
 	flag.Parse()
 }

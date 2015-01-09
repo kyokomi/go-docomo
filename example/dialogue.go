@@ -14,7 +14,7 @@ var nickName, message, apiKey string
 func init() {
 	flag.StringVar(&nickName, "nickName", "foo", "ニックネーム")
 	flag.StringVar(&message, "message", "こんにちわ", "雑談のメッセージ")
-	flag.StringVar(&apiKey, "APIKEY", os.Getenv("DOCOMO_APIKEY"), "docomo developerで登録したAPIKEYをして下さい")
+	flag.StringVar(&apiKey, "APIKEY", os.Getenv("DOCOMO_APIKEY"), "docomo developerで登録したAPIKEY")
 	flag.Parse()
 }
 

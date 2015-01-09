@@ -30,7 +30,7 @@ var nickName, message, apiKey string
 func init() {
 	flag.StringVar(&nickName, "nickName", "foo", "ニックネーム")
 	flag.StringVar(&message, "message", "こんにちわ", "雑談のメッセージ")
-	flag.StringVar(&apiKey, "APIKEY", os.Getenv("DOCOMO_APIKEY"), "docomo developerで登録したAPIKEYをして下さい")
+	flag.StringVar(&apiKey, "APIKEY", os.Getenv("DOCOMO_APIKEY"), "docomo developerで登録したAPIKEY")
 	flag.Parse()
 }
 
@@ -80,7 +80,7 @@ import (
 var apiKey, qa string
 
 func init() {
-	flag.StringVar(&apiKey, "APIKEY", os.Getenv("DOCOMO_APIKEY"), "docomo developerで登録したAPIKEYをして下さい")
+	flag.StringVar(&apiKey, "APIKEY", os.Getenv("DOCOMO_APIKEY"), "docomo developerで登録したAPIKEY")
 	flag.StringVar(&qa, "qa", "三つ峠の標高は？", "質問内容を指定してください")
 	flag.Parse()
 }
@@ -111,6 +111,64 @@ OutPut:
 
 ```
 2014/12/24 11:52:11 1,785m
+```
+
+### Trend API
+
+https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=26
+
+[example/trend.go](https://github.com/kyokomi/go-docomo/blob/master/example/trend.go)
+
+```go
+package main
+
+import (
+	"flag"
+	"log"
+
+	"os"
+
+	"fmt"
+
+	docomo "github.com/kyokomi/go-docomo"
+)
+
+var apiKey string
+
+func init() {
+	flag.StringVar(&apiKey, "APIKEY", os.Getenv("DOCOMO_APIKEY"), "docomo developerで登録したAPIKEY")
+	flag.Parse()
+}
+
+func main() {
+	if apiKey == "" {
+		log.Fatalln("APIKEYを指定して下さい")
+	}
+
+	d := docomo.New(apiKey)
+
+	// ジャンル取得
+
+	gRes, err := d.Trend.GetGenre(docomo.TrendGenreRequest{})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(gRes)
+
+	// 記事取得（ジャンルID指定）
+
+	var contentsReq docomo.TrendContentsRequest
+	contentsReq.GenreID = &gRes.Genre[0].GenreID
+
+	cRes, err := d.Trend.GetContents(contentsReq)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(cRes)
+
+	// TODO: キーワード検索
+
+}
 ```
 
 ## License
