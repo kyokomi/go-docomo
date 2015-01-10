@@ -11,10 +11,11 @@ import (
 	docomo "github.com/kyokomi/go-docomo"
 )
 
-var apiKey string
+var apiKey, keyword string
 
 func init() {
 	flag.StringVar(&apiKey, "APIKEY", os.Getenv("DOCOMO_APIKEY"), "docomo developerで登録したAPIKEY")
+	flag.StringVar(&keyword, "keyword", "", "記事検索キーワード")
 	flag.Parse()
 }
 
@@ -46,4 +47,12 @@ func main() {
 
 	// TODO: キーワード検索
 
+	var searchReq docomo.TrendSearchRequest
+	searchReq.Keyword = &keyword
+
+	sRes, err := d.Trend.GetSearch(searchReq)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(sRes)
 }

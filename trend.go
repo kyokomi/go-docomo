@@ -11,6 +11,8 @@ const (
 	TrendGenreURL = "/webCuration/v3/genre"
 	// TrendContentsURL docomoAPIのトレンドAPIの記事取得 docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=24#tag01
 	TrendContentsURL = "/webCuration/v3/contents"
+	// TrendSearchURL docomoAPIのトレンドAPIのキーワード検索 docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=25#tag01
+	TrendSearchURL = "/webCuration/v3/search"
 )
 
 // TrendService API docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=26
@@ -74,6 +76,46 @@ type TrendContentsResponse struct {
 	TotalResults float64 `json:"totalResults"`
 }
 
+// TrendSearchRequest キーワード検索
+type TrendSearchRequest struct {
+	// ジャンルID
+	GenreID *int `json:"genreId"`
+	// キーワード（UTF-8）
+	Keyword *string `json:"keyword"`
+	// ja: 日本語（default）、en: 英語
+	Lang *string `json:"lang"`
+	// 記事一覧の開始番号を指定(1以上999999以下の整数)。デフォルトは1
+	StartNo *int `json:"s"`
+	// カテゴリ内の記事一覧の取得件数を指定(0以上50以下の整数)。デフォルトは1
+	Num *int `json:"n"`
+}
+
+// TrendSearchResponse TrendSearchResponse
+type TrendSearchResponse struct {
+	ArticleContents []struct {
+		ContentData struct {
+			Body        string `json:"body"`
+			CreatedDate string `json:"createdDate"`
+			ImageSize   struct {
+				Height int `json:"height"`
+				Width  int `json:"width"`
+			} `json:"imageSize"`
+			ImageURL     string `json:"imageUrl"`
+			LinkURL      string `json:"linkUrl"`
+			SourceDomain string `json:"sourceDomain"`
+			SourceName   string `json:"sourceName"`
+			Title        string `json:"title"`
+		} `json:"contentData"`
+		ContentID   int `json:"contentId"`
+		ContentType int `json:"contentType"`
+		GenreID     int `json:"genreId"`
+	} `json:"articleContents"`
+	IssueDate    string `json:"issueDate"`
+	ItemsPerPage int    `json:"itemsPerPage"`
+	StartIndex   int    `json:"startIndex"`
+	TotalResults int    `json:"totalResults"`
+}
+
 // GetGenre ジャンル情報の取得する.
 func (t *TrendService) GetGenre(req TrendGenreRequest) (*TrendGenreResponse, error) {
 
@@ -126,4 +168,47 @@ func (t *TrendService) GetContents(req TrendContentsRequest) (*TrendContentsResp
 	}
 
 	return &trendRes, nil
+}
+
+// GetSearch キーワード検索
+func (t *TrendService) GetSearch(req TrendSearchRequest) (*TrendSearchResponse, error) {
+
+	v := url.Values{}
+	if err := validation(req.Keyword); err != nil {
+		return nil, err
+	}
+	v.Set("keyword", *req.Keyword)
+
+	if req.GenreID != nil {
+		v.Set("genreId", strconv.Itoa(*req.GenreID))
+	}
+	if req.Lang != nil {
+		v.Set("lang", *req.Lang)
+	}
+	if req.StartNo != nil {
+		v.Set("s", strconv.Itoa(*req.StartNo))
+	}
+	if req.Num != nil {
+		v.Set("n", strconv.Itoa(*req.Num))
+	}
+
+	res, err := t.client.get(TrendSearchURL, v)
+	if err != nil {
+		return nil, err
+	}
+
+	var trendRes TrendSearchResponse
+	if err := responseUnmarshal(res.Body, &trendRes); err != nil {
+		return nil, err
+	}
+
+	return &trendRes, nil
+}
+
+func validation(param interface{}) error {
+	if param == nil {
+		return errors.New("genreId has not set")
+	}
+
+	return nil
 }

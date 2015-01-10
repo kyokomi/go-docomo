@@ -50,11 +50,13 @@ func (d *DocomoClient) post(docomoURL string, bodyType string, body io.Reader) (
 
 func (d *DocomoClient) get(docomoURL string, query url.Values) (resp *http.Response, err error) {
 
-	u := d.createURL(docomoURL)
+	path := d.createURL(docomoURL)
 	for key, value := range query {
-		u += "&" + key + "=" + url.QueryEscape(value[0])
+		path += "&" + key + "=" + url.QueryEscape(value[0])
 	}
-	return d.client.Get(u)
+
+	u := url.URL{Path: path}
+	return d.client.Get(u.String())
 }
 
 func responseUnmarshal(body io.ReadCloser, v interface{}) error {
