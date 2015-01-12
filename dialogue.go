@@ -3,8 +3,6 @@ package docomo
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
-	"net/http"
 )
 
 const (
@@ -68,25 +66,17 @@ func (d *DialogueService) Get(req DialogueRequest, refreshContext bool) (*Dialog
 		return nil, err
 	}
 
-	res, err := d.client.post(DialogueURL, "application/json", bytes.NewReader(data))
+	var dialogueRes DialogueResponse
+	_, err = d.client.post(DialogueURL, "application/json", bytes.NewReader(data), &dialogueRes)
 	if err != nil {
 		return nil, err
 	}
 
-	var zatsudanRes DialogueResponse
-	if err := responseUnmarshal(res.Body, &zatsudanRes); err != nil {
-		return nil, err
-	}
-
-	if res.StatusCode != http.StatusOK {
-		return nil, errors.New("zatsudan error response: " + zatsudanRes.RequestError.PolicyException.Text)
-	}
-
 	if refreshContext {
-		d.SetContext(zatsudanRes.Context)
+		d.SetContext(dialogueRes.Context)
 	}
 
-	return &zatsudanRes, nil
+	return &dialogueRes, nil
 }
 
 // SetContext setter DocomoClient context.

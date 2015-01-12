@@ -1,10 +1,6 @@
 package docomo
 
-import (
-	"errors"
-	"net/http"
-	"net/url"
-)
+import "net/url"
 
 const (
 	// KnowledgeQAURL docomoAPIの知識Q&Aのmethod
@@ -56,19 +52,12 @@ func (q *KnowledgeQAService) Get(req KnowledgeQARequest) (*KnowledgeQAResponse, 
 
 	val := url.Values{}
 	val.Set("q", req.QAText)
-	res, err := q.client.get(KnowledgeQAURL, val)
+
+	var knowRes KnowledgeQAResponse
+	_, err := q.client.get(KnowledgeQAURL, val, &knowRes)
 	if err != nil {
 		return nil, err
 	}
 
-	if res.StatusCode != http.StatusOK {
-		return nil, errors.New("response error code: " + res.Status)
-	}
-
-	var qaRes KnowledgeQAResponse
-	if err := responseUnmarshal(res.Body, &qaRes); err != nil {
-		return nil, err
-	}
-
-	return &qaRes, nil
+	return &knowRes, nil
 }

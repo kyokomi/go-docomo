@@ -76,7 +76,7 @@ type TrendContentsResponse struct {
 	TotalResults float64 `json:"totalResults"`
 }
 
-// TrendSearchRequest キーワード検索
+// TrendSearchRequest キーワード検索リクエスト
 type TrendSearchRequest struct {
 	// ジャンルID
 	GenreID *int `json:"genreId"`
@@ -90,7 +90,7 @@ type TrendSearchRequest struct {
 	Num *int `json:"n"`
 }
 
-// TrendSearchResponse TrendSearchResponse
+// TrendSearchResponse キーワード検索レスポンス
 type TrendSearchResponse struct {
 	ArticleContents []struct {
 		ContentData struct {
@@ -124,13 +124,9 @@ func (t *TrendService) GetGenre(req TrendGenreRequest) (*TrendGenreResponse, err
 		v.Set("lang", *req.Lang)
 	}
 
-	res, err := t.client.get(TrendGenreURL, v)
-	if err != nil {
-		return nil, err
-	}
-
 	var trendRes TrendGenreResponse
-	if err := responseUnmarshal(res.Body, &trendRes); err != nil {
+	_, err := t.client.get(TrendGenreURL, v, &trendRes)
+	if err != nil {
 		return nil, err
 	}
 
@@ -157,13 +153,9 @@ func (t *TrendService) GetContents(req TrendContentsRequest) (*TrendContentsResp
 		v.Set("n", strconv.Itoa(*req.Num))
 	}
 
-	res, err := t.client.get(TrendContentsURL, v)
-	if err != nil {
-		return nil, err
-	}
-
 	var trendRes TrendContentsResponse
-	if err := responseUnmarshal(res.Body, &trendRes); err != nil {
+	_, err := t.client.get(TrendContentsURL, v, &trendRes)
+	if err != nil {
 		return nil, err
 	}
 
@@ -192,13 +184,15 @@ func (t *TrendService) GetSearch(req TrendSearchRequest) (*TrendSearchResponse, 
 		v.Set("n", strconv.Itoa(*req.Num))
 	}
 
-	res, err := t.client.get(TrendSearchURL, v)
+	var trendRes TrendSearchResponse
+	_, err := t.client.get(TrendSearchURL, v, &trendRes)
 	if err != nil {
 		return nil, err
 	}
 
-	var trendRes TrendSearchResponse
-	if err := responseUnmarshal(res.Body, &trendRes); err != nil {
+	return &trendRes, nil
+}
+
 		return nil, err
 	}
 

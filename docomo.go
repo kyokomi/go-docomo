@@ -44,11 +44,20 @@ func (d *DocomoClient) createURL(docomoURL string) string {
 	return d.domain + docomoURL + "?APIKEY=" + d.apiKey
 }
 
-func (d *DocomoClient) post(docomoURL string, bodyType string, body io.Reader) (resp *http.Response, err error) {
-	return d.client.Post(d.createURL(docomoURL), bodyType, body)
+func (d *DocomoClient) post(docomoURL string, bodyType string, body io.Reader, v interface{}) (resp *http.Response, err error) {
+	res, err := d.client.Post(d.createURL(docomoURL), bodyType, body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := responseUnmarshal(res.Body, v); err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
 
-func (d *DocomoClient) get(docomoURL string, query url.Values) (resp *http.Response, err error) {
+func (d *DocomoClient) get(docomoURL string, query url.Values, v interface{}) (resp *http.Response, err error) {
 
 	path := d.createURL(docomoURL)
 	for key, value := range query {
@@ -56,7 +65,17 @@ func (d *DocomoClient) get(docomoURL string, query url.Values) (resp *http.Respo
 	}
 
 	u := url.URL{Path: path}
-	return d.client.Get(u.String())
+
+	res, err := d.client.Get(u.String())
+	if err != nil {
+		return nil, err
+	}
+
+	if err := responseUnmarshal(res.Body, v); err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
 
 func responseUnmarshal(body io.ReadCloser, v interface{}) error {
