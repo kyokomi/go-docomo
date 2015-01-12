@@ -26,7 +26,7 @@ func main() {
 
 	d := docomo.New(apiKey)
 
-	// ジャンル取得
+	fmt.Println("\n---ジャンル取得---\n")
 
 	gRes, err := d.Trend.GetGenre(docomo.TrendGenreRequest{})
 	if err != nil {
@@ -34,7 +34,7 @@ func main() {
 	}
 	fmt.Println(gRes)
 
-	// 記事取得（ジャンルID指定）
+	fmt.Println("\n---記事取得---\n")
 
 	var contentsReq docomo.TrendContentsRequest
 	contentsReq.GenreID = &gRes.Genre[0].GenreID
@@ -45,7 +45,7 @@ func main() {
 	}
 	fmt.Println(cRes)
 
-	// TODO: キーワード検索
+	fmt.Println("\n---キーワード検索---\n")
 
 	var searchReq docomo.TrendSearchRequest
 	searchReq.Keyword = &keyword
@@ -55,4 +55,22 @@ func main() {
 		log.Fatalln(err)
 	}
 	fmt.Println(sRes)
+
+	fmt.Println("\n---関連記事検索---\n")
+
+	var relatedReq docomo.TrendRelatedRequest
+
+	// TODO: なかなかヒットしないからループして全部チェックしてる
+	for _, cont := range sRes.ArticleContents {
+		relatedReq.ContentID = &cont.ContentID
+		rRes, err := d.Trend.GetRelated(relatedReq)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		if rRes.TotalResults > 0 {
+			fmt.Println(rRes)
+			break
+		}
+	}
 }

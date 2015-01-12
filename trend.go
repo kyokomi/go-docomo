@@ -13,6 +13,8 @@ const (
 	TrendContentsURL = "/webCuration/v3/contents"
 	// TrendSearchURL docomoAPIのトレンドAPIのキーワード検索 docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=25#tag01
 	TrendSearchURL = "/webCuration/v3/search"
+	// TrendRelatedURL docomoAPIのトレンドAPIの関連記事取得 docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=109#tag01
+	TrendRelatedURL = "/webCuration/v3/relatedContents"
 )
 
 // TrendService API docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=26
@@ -116,6 +118,36 @@ type TrendSearchResponse struct {
 	TotalResults int    `json:"totalResults"`
 }
 
+// TrendRelatedRequest 関連記事取得リクエスト
+type TrendRelatedRequest struct {
+	// 関連記事を取得する記事ID 必須
+	ContentID *int `json:"contentId"`
+}
+
+// TrendRelatedResponse 関連記事取得レスポンス
+type TrendRelatedResponse struct {
+	ArticleContents []struct {
+		ContentData struct {
+			Body        string `json:"body"`
+			CreatedDate string `json:"createdDate"`
+			ImageSize   struct {
+				Height int `json:"height"`
+				Width  int `json:"width"`
+			} `json:"imageSize"`
+			ImageURL     string `json:"imageUrl"`
+			LinkURL      string `json:"linkUrl"`
+			SourceDomain string `json:"sourceDomain"`
+			SourceName   string `json:"sourceName"`
+			Title        string `json:"title"`
+		} `json:"contentData"`
+		ContentID       int    `json:"contentId"`
+		ContentType     int    `json:"contentType"`
+		GenreID         int    `json:"genreId"`
+		RelatedContents string `json:"relatedContents"`
+	} `json:"articleContents"`
+	TotalResults int `json:"totalResults"`
+}
+
 // GetGenre ジャンル情報の取得する.
 func (t *TrendService) GetGenre(req TrendGenreRequest) (*TrendGenreResponse, error) {
 
@@ -193,6 +225,18 @@ func (t *TrendService) GetSearch(req TrendSearchRequest) (*TrendSearchResponse, 
 	return &trendRes, nil
 }
 
+// GetRelated 関連記事取得
+func (t *TrendService) GetRelated(req TrendRelatedRequest) (*TrendRelatedResponse, error) {
+
+	v := url.Values{}
+	if err := validation(req.ContentID); err != nil {
+		return nil, err
+	}
+	v.Set("contentId", strconv.Itoa(*req.ContentID))
+
+	var trendRes TrendRelatedResponse
+	_, err := t.client.get(TrendRelatedURL, v, &trendRes)
+	if err != nil {
 		return nil, err
 	}
 

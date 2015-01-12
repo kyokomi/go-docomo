@@ -166,8 +166,32 @@ func main() {
 	}
 	fmt.Println(cRes)
 
-	// TODO: キーワード検索
+	// キーワード検索
 
+	var searchReq docomo.TrendSearchRequest
+	searchReq.Keyword = &keyword
+
+	sRes, err := d.Trend.GetSearch(searchReq)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(sRes)
+
+    // 関連記事検索（なかなかヒットしない）
+
+    var relatedReq docomo.TrendRelatedRequest
+    for _, cont := range sRes.ArticleContents {
+        relatedReq.ContentID = &cont.ContentID
+        rRes, err := d.Trend.GetRelated(relatedReq)
+        if err != nil {
+            log.Fatalln(err)
+        }
+
+        if rRes.TotalResults > 0 {
+            fmt.Println(rRes)
+            break
+        }
+    }
 }
 ```
 
