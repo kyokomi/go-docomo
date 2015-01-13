@@ -1,0 +1,39 @@
+{
+  "code": "S020010",
+  "message": {
+    "textForDisplay": "インターネットで調べたところ、一位は、ガガーリンです。",
+    "textForSpeech": "インターネットで調べたところ、一位は、ガガーリンです。"
+  },
+  "answers": [
+    {
+      "rank": "1",
+      "answerText": "ガガーリン",
+      "linkText": "人類初の宇宙飛行士ガガーリンの半生と挑戦を描いた映画が12月に公開",
+      "linkUrl": "http://entamenaw.blog.so-net.ne.jp/2014-10-28-4"
+    },
+    {
+      "rank": "2",
+      "answerText": "イル・ゴン",
+      "linkText": "【人類初】 北朝鮮 宇宙飛行士が太陽に着陸と発表",
+      "linkUrl": "http://ameblo.jp/mondo-n/entry-11949835628.html"
+    },
+    {
+      "rank": "3",
+      "answerText": "ユーリイ・ガガーリン",
+      "linkText": "人類初の宇宙飛行士ガガーリンの半生と挑戦を描いた映画が12月に公開",
+      "linkUrl": "http://entamenaw.blog.so-net.ne.jp/2014-10-28-4"
+    },
+    {
+      "rank": "4",
+      "answerText": "ニール・アームストロング",
+      "linkText": "( ´Д⊂ヽ",
+      "linkUrl": "http://d.hatena.ne.jp/fetida/mobile?date=20120828"
+    },
+    {
+      "rank": "5",
+      "answerText": "野口",
+      "linkText": "こども宇宙ニュース (2010-01-25)野口宇宙飛行士 国際宇宙ステーションに長期滞在 | SPACE INFORMATION CENTER",
+      "linkUrl": "http://spaceinfo.jaxa.jp/ja/cosmic_news_20100125.html"
+    }
+  ]
+}
