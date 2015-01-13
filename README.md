@@ -7,6 +7,10 @@ go-docomo is a Go client library for accessing the [docomo API](https://dev.smt.
 
 ## Usage
 
+```
+import "github.com/kyokomi/go-docomo/docomo"
+```
+
 ### dialogue API
 
 https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=5
@@ -22,7 +26,7 @@ import (
 
 	"os"
 
-	docomo "github.com/kyokomi/go-docomo"
+	"github.com/kyokomi/go-docomo/docomo"
 )
 
 var nickName, message, apiKey string
@@ -74,7 +78,7 @@ import (
 
 	"os"
 
-	docomo "github.com/kyokomi/go-docomo"
+	"github.com/kyokomi/go-docomo/docomo"
 )
 
 var apiKey, qa string
@@ -130,7 +134,7 @@ import (
 
 	"fmt"
 
-	docomo "github.com/kyokomi/go-docomo"
+	"github.com/kyokomi/go-docomo/docomo"
 )
 
 var apiKey string

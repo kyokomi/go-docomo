@@ -12,7 +12,7 @@ func TestDialogueGet(t *testing.T) {
 	}
 
 	testCase := TestCase{
-		in:  "tests/stubs/dialogue.json",
+		in:  "../tests/stubs/dialogue.json",
 		out: "こんにちは。ちょうど退屈してたんだ。",
 	}
 

@@ -8,7 +8,7 @@ import (
 
 	"fmt"
 
-	docomo "github.com/kyokomi/go-docomo"
+	"github.com/kyokomi/go-docomo/docomo"
 )
 
 var apiKey, keyword string

@@ -10,7 +10,7 @@ func TestKnowledgeGet(t *testing.T) {
 	}
 
 	testCase := TestCase{
-		in:  "tests/stubs/knowledge.json",
+		in:  "../tests/stubs/knowledge.json",
 		out: "ガガーリン",
 	}
 

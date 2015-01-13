@@ -6,7 +6,7 @@ import (
 
 	"os"
 
-	docomo "github.com/kyokomi/go-docomo"
+	"github.com/kyokomi/go-docomo/docomo"
 )
 
 var nickName, message, apiKey string
