@@ -24,7 +24,7 @@ func main() {
 		log.Fatalln("APIKEYを指定して下さい")
 	}
 
-	d := docomo.New(apiKey)
+	d := docomo.NewClient(apiKey)
 
 	fmt.Println("\n---ジャンル取得---\n")
 

@@ -19,7 +19,7 @@ const (
 
 // TrendService API docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=26
 type TrendService struct {
-	client *DocomoClient
+	client *Client
 }
 
 // TrendGenreRequest ジャンル情報取得のリクエスト

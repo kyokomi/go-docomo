@@ -13,8 +13,8 @@ const (
 	DomainURL = "https://api.apigw.smt.docomo.ne.jp"
 )
 
-// DocomoClient DocomoAPIへのpostやgetを行うクライアント
-type DocomoClient struct {
+// Client DocomoAPIへのpostやgetを行うクライアント
+type Client struct {
 	client  *http.Client
 	domain  string
 	apiKey  string
@@ -25,9 +25,9 @@ type DocomoClient struct {
 	Dialogue    *DialogueService
 }
 
-// New DocomoClientを生成する
-func New(apiKey string) *DocomoClient {
-	c := &DocomoClient{}
+// NewClient docomo APIのClientを生成する
+func NewClient(apiKey string) *Client {
+	c := &Client{}
 	c.client = http.DefaultClient
 	c.domain = DomainURL
 	c.apiKey = apiKey
@@ -40,12 +40,17 @@ func New(apiKey string) *DocomoClient {
 	return c
 }
 
-func (d *DocomoClient) createURL(docomoURL string) string {
-	return d.domain + docomoURL + "?APIKEY=" + d.apiKey
+func (c *Client) createURL(docomoURL string) string {
+	return c.domain + docomoURL + "?APIKEY=" + c.apiKey
 }
 
-func (d *DocomoClient) post(docomoURL string, bodyType string, body io.Reader, v interface{}) (resp *http.Response, err error) {
-	res, err := d.client.Post(d.createURL(docomoURL), bodyType, body)
+// SetDomain is domain setter
+func (c *Client) SetDomain(domain string) {
+	c.domain = domain
+}
+
+func (c *Client) post(docomoURL string, bodyType string, body io.Reader, v interface{}) (resp *http.Response, err error) {
+	res, err := c.client.Post(c.createURL(docomoURL), bodyType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -57,16 +62,16 @@ func (d *DocomoClient) post(docomoURL string, bodyType string, body io.Reader, v
 	return res, nil
 }
 
-func (d *DocomoClient) get(docomoURL string, query url.Values, v interface{}) (resp *http.Response, err error) {
+func (c *Client) get(docomoURL string, query url.Values, v interface{}) (resp *http.Response, err error) {
 
-	path := d.createURL(docomoURL)
+	path := c.createURL(docomoURL)
 	for key, value := range query {
 		path += "&" + key + "=" + url.QueryEscape(value[0])
 	}
 
 	u := url.URL{Path: path}
 
-	res, err := d.client.Get(u.String())
+	res, err := c.client.Get(u.String())
 	if err != nil {
 		return nil, err
 	}

@@ -19,7 +19,7 @@ const (
 
 // KnowledgeQAService API docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=6
 type KnowledgeQAService struct {
-	client *DocomoClient
+	client *Client
 }
 
 // KnowledgeQARequest 知識Q&Aのリクエスト

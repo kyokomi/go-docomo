@@ -12,7 +12,7 @@ const (
 
 // DialogueService API docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=5
 type DialogueService struct {
-	client *DocomoClient
+	client *Client
 }
 
 // DialogueRequest 雑談APIのリクエスト

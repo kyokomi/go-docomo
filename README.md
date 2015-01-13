@@ -39,7 +39,7 @@ func main() {
 		log.Fatalln("APIKEYを指定して下さい")
 	}
 
-	d := docomo.New(apiKey)
+	d := docomo.NewClient(apiKey)
 
 	zatsu := docomo.DialogueRequest{
 		Nickname: &nickName,
@@ -90,7 +90,7 @@ func main() {
 		log.Fatalln("APIKEYを指定して下さい")
 	}
 
-	d := docomo.New(apiKey)
+	d := docomo.NewClient(apiKey)
 
 	qaReq := docomo.KnowledgeQARequest{
 		QAText: qa,
@@ -145,7 +145,7 @@ func main() {
 		log.Fatalln("APIKEYを指定して下さい")
 	}
 
-	d := docomo.New(apiKey)
+	d := docomo.NewClient(apiKey)
 
 	// ジャンル取得
 
