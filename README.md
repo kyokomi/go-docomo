@@ -1,6 +1,8 @@
 go-docomo
 =========
 
+[![Circle CI](https://circleci.com/gh/kyokomi/go-docomo.svg?style=svg)](https://circleci.com/gh/kyokomi/go-docomo)
+[![Coverage Status](https://img.shields.io/coveralls/kyokomi/go-docomo.svg)](https://coveralls.io/r/kyokomi/go-docomo?branch=master)
 [![GoDoc](https://godoc.org/github.com/kyokomi/go-docomo?status.svg)](https://godoc.org/github.com/kyokomi/go-docomo)
 
 go-docomo is a Go client library for accessing the [docomo API](https://dev.smt.docomo.ne.jp/).
