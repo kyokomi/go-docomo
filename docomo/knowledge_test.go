@@ -1,20 +1,22 @@
 package docomo
 
-import "testing"
+import (
+	"testing"
+	"reflect"
+)
 
 func TestKnowledgeGet(t *testing.T) {
 
 	type TestCase struct {
 		in  string
-		out string
+		out KnowledgeQAResponse
 	}
 
 	testCase := TestCase{
 		in:  "../tests/stubs/knowledge.json",
-		out: "ガガーリン",
 	}
 
-	serve, client := Stub(testCase.in)
+	serve, client := Stub(testCase.in, &testCase.out)
 	defer serve.Close()
 
 	req := KnowledgeQARequest{}
@@ -23,12 +25,7 @@ func TestKnowledgeGet(t *testing.T) {
 		t.Errorf("error Request %s\n", err)
 	}
 
-	answers := 5
-	if len(res.Answers) != answers {
-		t.Errorf("error Response answers lenght %d != %d\n", len(res.Answers), answers)
-	}
-
-	if res.Answers[0].AnswerText != testCase.out {
-		t.Errorf("error Response %s != %s\n", res.Answers[0].AnswerText, testCase.out)
+	if !reflect.DeepEqual(*res, testCase.out) {
+		t.Errorf("error Response %s != %s\n", res, testCase.out)
 	}
 }

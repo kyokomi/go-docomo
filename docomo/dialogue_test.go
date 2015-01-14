@@ -2,21 +2,20 @@ package docomo
 
 import (
 	"testing"
+	"reflect"
 )
 
 func TestDialogueGet(t *testing.T) {
 
 	type TestCase struct {
 		in  string
-		out string
+		out DialogueResponse
 	}
 
 	testCase := TestCase{
 		in:  "../tests/stubs/dialogue.json",
-		out: "こんにちは。ちょうど退屈してたんだ。",
 	}
-
-	serve, client := Stub(testCase.in)
+	serve, client := Stub(testCase.in, &testCase.out)
 	defer serve.Close()
 
 	d := DialogueRequest{}
@@ -25,7 +24,7 @@ func TestDialogueGet(t *testing.T) {
 		t.Errorf("error Request %s\n", err)
 	}
 
-	if res.Utt != testCase.out {
-		t.Errorf("error Response %s != \n", res.Utt, testCase.out)
+	if !reflect.DeepEqual(*res, testCase.out) {
+		t.Errorf("error Response %s != %s\n", res, testCase.out)
 	}
 }
