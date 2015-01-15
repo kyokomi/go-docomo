@@ -1,8 +1,8 @@
 package docomo
 
 import (
-	"testing"
 	"reflect"
+	"testing"
 )
 
 func TestDialogueGet(t *testing.T) {
@@ -13,7 +13,7 @@ func TestDialogueGet(t *testing.T) {
 	}
 
 	testCase := TestCase{
-		in:  "../tests/stubs/dialogue.json",
+		in: "../tests/stubs/dialogue.json",
 	}
 	serve, client := Stub(testCase.in, &testCase.out)
 	defer serve.Close()

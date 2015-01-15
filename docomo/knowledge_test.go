@@ -1,8 +1,8 @@
 package docomo
 
 import (
-	"testing"
 	"reflect"
+	"testing"
 )
 
 func TestKnowledgeGet(t *testing.T) {
@@ -13,7 +13,7 @@ func TestKnowledgeGet(t *testing.T) {
 	}
 
 	testCase := TestCase{
-		in:  "../tests/stubs/knowledge.json",
+		in: "../tests/stubs/knowledge.json",
 	}
 
 	serve, client := Stub(testCase.in, &testCase.out)

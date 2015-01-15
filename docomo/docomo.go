@@ -44,11 +44,6 @@ func (c *Client) createURL(docomoURL string) string {
 	return c.domain + docomoURL + "?APIKEY=" + c.apiKey
 }
 
-// SetDomain is domain setter
-func (c *Client) SetDomain(domain string) {
-	c.domain = domain
-}
-
 func (c *Client) post(docomoURL string, bodyType string, body io.Reader, v interface{}) (resp *http.Response, err error) {
 	res, err := c.client.Post(c.createURL(docomoURL), bodyType, body)
 	if err != nil {

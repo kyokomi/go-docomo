@@ -1,11 +1,11 @@
 package docomo
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
-	"encoding/json"
 )
 
 // Stub test用のスタブ
@@ -18,7 +18,7 @@ func Stub(filename string, outRes interface{}) (*httptest.Server, *Client) {
 		w.Write([]byte(stub))
 	}))
 	c := NewClient("")
-	c.SetDomain(ts.URL)
+	c.domain = ts.URL
 
 	// testCase out data
 	data, err := ioutil.ReadFile(filename)

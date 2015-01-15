@@ -1,8 +1,8 @@
 package docomo
 
 import (
-	"testing"
 	"reflect"
+	"testing"
 )
 
 func TestTrendGetGenre(t *testing.T) {
@@ -12,7 +12,7 @@ func TestTrendGetGenre(t *testing.T) {
 	}
 
 	testCase := TestCase{
-		in:  "../tests/stubs/trend_genre.json",
+		in: "../tests/stubs/trend_genre.json",
 	}
 	serve, client := Stub(testCase.in, &testCase.out)
 	defer serve.Close()
@@ -35,13 +35,13 @@ func TestTrendGetContents(t *testing.T) {
 	}
 
 	testCase := TestCase{
-		in:  "../tests/stubs/trend_contents.json",
+		in: "../tests/stubs/trend_contents.json",
 	}
 	serve, client := Stub(testCase.in, &testCase.out)
 	defer serve.Close()
 
 	req := TrendContentsRequest{}
-	var genreID int = 1
+	genreID := 1
 	req.GenreID = &genreID
 	res, err := client.Trend.GetContents(req)
 	if err != nil {
@@ -60,13 +60,13 @@ func TestTrendGetSearch(t *testing.T) {
 	}
 
 	testCase := TestCase{
-		in:  "../tests/stubs/trend_search.json",
+		in: "../tests/stubs/trend_search.json",
 	}
 	serve, client := Stub(testCase.in, &testCase.out)
 	defer serve.Close()
 
 	req := TrendSearchRequest{}
-	var keyword string = "test"
+	keyword := "test"
 	req.Keyword = &keyword
 	res, err := client.Trend.GetSearch(req)
 	if err != nil {
@@ -85,13 +85,13 @@ func TestTrendGetRelated(t *testing.T) {
 	}
 
 	testCase := TestCase{
-		in:  "../tests/stubs/trend_related.json",
+		in: "../tests/stubs/trend_related.json",
 	}
 	serve, client := Stub(testCase.in, &testCase.out)
 	defer serve.Close()
 
 	req := TrendRelatedRequest{}
-	var contentID int = 1
+	contentID := 1
 	req.ContentID = &contentID
 	res, err := client.Trend.GetRelated(req)
 	if err != nil {
