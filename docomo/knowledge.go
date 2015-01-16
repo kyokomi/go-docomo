@@ -54,10 +54,12 @@ func (q *KnowledgeQAService) Get(req KnowledgeQARequest) (*KnowledgeQAResponse, 
 	val.Set("q", req.QAText)
 
 	var knowRes KnowledgeQAResponse
-	_, err := q.client.get(KnowledgeQAURL, val, &knowRes)
+	res, err := q.client.get(KnowledgeQAURL, val, &knowRes)
 	if err != nil {
 		return nil, err
 	}
+
+	defer res.Body.Close()
 
 	return &knowRes, nil
 }

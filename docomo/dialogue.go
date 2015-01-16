@@ -67,10 +67,12 @@ func (d *DialogueService) Get(req DialogueRequest, refreshContext bool) (*Dialog
 	}
 
 	var dialogueRes DialogueResponse
-	_, err = d.client.post(DialogueURL, "application/json", bytes.NewReader(data), &dialogueRes)
+	res, err := d.client.post(DialogueURL, "application/json", bytes.NewReader(data), &dialogueRes)
 	if err != nil {
 		return nil, err
 	}
+
+	defer res.Body.Close()
 
 	if refreshContext {
 		d.SetContext(dialogueRes.Context)

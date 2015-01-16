@@ -157,10 +157,12 @@ func (t *TrendService) GetGenre(req TrendGenreRequest) (*TrendGenreResponse, err
 	}
 
 	var trendRes TrendGenreResponse
-	_, err := t.client.get(TrendGenreURL, v, &trendRes)
+	res, err := t.client.get(TrendGenreURL, v, &trendRes)
 	if err != nil {
 		return nil, err
 	}
+
+	defer res.Body.Close()
 
 	return &trendRes, nil
 }
@@ -186,10 +188,12 @@ func (t *TrendService) GetContents(req TrendContentsRequest) (*TrendContentsResp
 	}
 
 	var trendRes TrendContentsResponse
-	_, err := t.client.get(TrendContentsURL, v, &trendRes)
+	res, err := t.client.get(TrendContentsURL, v, &trendRes)
 	if err != nil {
 		return nil, err
 	}
+
+	defer res.Body.Close()
 
 	return &trendRes, nil
 }
@@ -217,10 +221,12 @@ func (t *TrendService) GetSearch(req TrendSearchRequest) (*TrendSearchResponse, 
 	}
 
 	var trendRes TrendSearchResponse
-	_, err := t.client.get(TrendSearchURL, v, &trendRes)
+	res, err := t.client.get(TrendSearchURL, v, &trendRes)
 	if err != nil {
 		return nil, err
 	}
+
+	defer res.Body.Close()
 
 	return &trendRes, nil
 }
@@ -235,10 +241,12 @@ func (t *TrendService) GetRelated(req TrendRelatedRequest) (*TrendRelatedRespons
 	v.Set("contentId", strconv.Itoa(*req.ContentID))
 
 	var trendRes TrendRelatedResponse
-	_, err := t.client.get(TrendRelatedURL, v, &trendRes)
+	res, err := t.client.get(TrendRelatedURL, v, &trendRes)
 	if err != nil {
 		return nil, err
 	}
+
+	defer res.Body.Close()
 
 	return &trendRes, nil
 }
