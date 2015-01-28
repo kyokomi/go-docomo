@@ -53,7 +53,6 @@ func main() {
 	fmt.Println("---キーワード検索---")
 	fmt.Println()
 
-
 	var searchReq docomo.TrendSearchRequest
 	searchReq.Keyword = &keyword
 
