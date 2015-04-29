@@ -1,7 +1,7 @@
 dependencies:
   override:
     - go get -t -d -v ./...
-     
+
 test:
   pre:
     - go get github.com/axw/gocov/gocov
