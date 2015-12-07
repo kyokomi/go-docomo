@@ -1,8 +1,9 @@
 test:
   pre:
+    - go version
     - go get github.com/axw/gocov/gocov
     - go get github.com/mattn/goveralls
     
   override:
-    - go test -v ./docomo
+    - go test -v ./docomo/...
     - goveralls -v -service=circle-ci -repotoken $COVERALLS_TOKEN ./docomo
