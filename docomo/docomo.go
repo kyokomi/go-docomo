@@ -6,6 +6,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+
+	"github.com/kyokomi/go-docomo/internal"
+	"golang.org/x/net/context"
 )
 
 const (
@@ -28,7 +31,11 @@ type Client struct {
 // NewClient docomo APIのClientを生成する
 func NewClient(apiKey string) *Client {
 	c := &Client{}
-	c.client = http.DefaultClient
+	cli, err := internal.ContextClient(context.Background())
+	if err != nil {
+		cli = http.DefaultClient
+	}
+	c.client = cli
 	c.domain = DomainURL
 	c.apiKey = apiKey
 	c.context = ""
