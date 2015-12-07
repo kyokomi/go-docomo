@@ -3,6 +3,8 @@ package docomo
 import (
 	"bytes"
 	"encoding/json"
+
+	"golang.org/x/net/context"
 )
 
 const (
@@ -12,6 +14,7 @@ const (
 
 // DialogueService API docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=5
 type DialogueService struct {
+	ctx    context.Context
 	client *Client
 }
 
@@ -51,10 +54,14 @@ type DialogueResponse struct {
 	} `json:"requestError"`
 }
 
+func (d *DialogueService) WithContext(ctx context.Context) *DialogueService {
+	d.ctx = ctx
+	return d
+}
+
 // Get 雑談APIを呼び出して結果を取得する.
 // refreshContextがtrueの場合、DocomoClientのContextを更新する
 func (d *DialogueService) Get(req DialogueRequest, refreshContext bool) (*DialogueResponse, error) {
-
 	// context有効の場合、clientで保持しているcontextを設定する
 	if refreshContext && req.Context != nil {
 		d.SetContext(*req.Context)
@@ -67,7 +74,7 @@ func (d *DialogueService) Get(req DialogueRequest, refreshContext bool) (*Dialog
 	}
 
 	var dialogueRes DialogueResponse
-	res, err := d.client.post(DialogueURL, "application/json", bytes.NewReader(data), &dialogueRes)
+	res, err := d.client.post(d.ctx, DialogueURL, "application/json", bytes.NewReader(data), &dialogueRes)
 	if err != nil {
 		return nil, err
 	}

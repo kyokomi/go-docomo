@@ -18,7 +18,6 @@ const (
 
 // Client DocomoAPIへのpostやgetを行うクライアント
 type Client struct {
-	client  *http.Client
 	domain  string
 	apiKey  string
 	context string
@@ -31,28 +30,33 @@ type Client struct {
 // NewClient docomo APIのClientを生成する
 func NewClient(apiKey string) *Client {
 	c := &Client{}
-	cli, err := internal.ContextClient(context.Background())
-	if err != nil {
-		cli = http.DefaultClient
-	}
-	c.client = cli
+
 	c.domain = DomainURL
 	c.apiKey = apiKey
 	c.context = ""
 
-	c.Trend = &TrendService{client: c}
-	c.KnowledgeQA = &KnowledgeQAService{client: c}
-	c.Dialogue = &DialogueService{client: c}
+	ctx := context.Background()
+	c.Trend = &TrendService{client: c, ctx: ctx}
+	c.KnowledgeQA = &KnowledgeQAService{client: c, ctx: ctx}
+	c.Dialogue = &DialogueService{client: c, ctx: ctx}
 
 	return c
+}
+
+func (c *Client) contextClient(ctx context.Context) *http.Client {
+	cli, err := internal.ContextClient(ctx)
+	if err != nil {
+		cli = http.DefaultClient
+	}
+	return cli
 }
 
 func (c *Client) createURL(docomoURL string) string {
 	return c.domain + docomoURL + "?APIKEY=" + c.apiKey
 }
 
-func (c *Client) post(docomoURL string, bodyType string, body io.Reader, v interface{}) (resp *http.Response, err error) {
-	res, err := c.client.Post(c.createURL(docomoURL), bodyType, body)
+func (c *Client) post(ctx context.Context, docomoURL string, bodyType string, body io.Reader, v interface{}) (resp *http.Response, err error) {
+	res, err := c.contextClient(ctx).Post(c.createURL(docomoURL), bodyType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -64,8 +68,7 @@ func (c *Client) post(docomoURL string, bodyType string, body io.Reader, v inter
 	return res, nil
 }
 
-func (c *Client) get(docomoURL string, query url.Values, v interface{}) (resp *http.Response, err error) {
-
+func (c *Client) get(ctx context.Context, docomoURL string, query url.Values, v interface{}) (resp *http.Response, err error) {
 	path := c.createURL(docomoURL)
 	for key, value := range query {
 		path += "&" + key + "=" + url.QueryEscape(value[0])
@@ -73,7 +76,7 @@ func (c *Client) get(docomoURL string, query url.Values, v interface{}) (resp *h
 
 	u := url.URL{Path: path}
 
-	res, err := c.client.Get(u.String())
+	res, err := c.contextClient(ctx).Get(u.String())
 	if err != nil {
 		return nil, err
 	}
