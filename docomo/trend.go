@@ -4,6 +4,8 @@ import (
 	"errors"
 	"net/url"
 	"strconv"
+
+	"golang.org/x/net/context"
 )
 
 const (
@@ -19,6 +21,7 @@ const (
 
 // TrendService API docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=26
 type TrendService struct {
+	ctx    context.Context
 	client *Client
 }
 
@@ -148,6 +151,11 @@ type TrendRelatedResponse struct {
 	TotalResults int `json:"totalResults"`
 }
 
+func (d *TrendService) WithContext(ctx context.Context) *TrendService {
+	d.ctx = ctx
+	return d
+}
+
 // GetGenre ジャンル情報の取得する.
 func (t *TrendService) GetGenre(req TrendGenreRequest) (*TrendGenreResponse, error) {
 
@@ -157,7 +165,7 @@ func (t *TrendService) GetGenre(req TrendGenreRequest) (*TrendGenreResponse, err
 	}
 
 	var trendRes TrendGenreResponse
-	res, err := t.client.get(TrendGenreURL, v, &trendRes)
+	res, err := t.client.get(t.ctx, TrendGenreURL, v, &trendRes)
 	if err != nil {
 		return nil, err
 	}
@@ -188,7 +196,7 @@ func (t *TrendService) GetContents(req TrendContentsRequest) (*TrendContentsResp
 	}
 
 	var trendRes TrendContentsResponse
-	res, err := t.client.get(TrendContentsURL, v, &trendRes)
+	res, err := t.client.get(t.ctx, TrendContentsURL, v, &trendRes)
 	if err != nil {
 		return nil, err
 	}
@@ -221,7 +229,7 @@ func (t *TrendService) GetSearch(req TrendSearchRequest) (*TrendSearchResponse, 
 	}
 
 	var trendRes TrendSearchResponse
-	res, err := t.client.get(TrendSearchURL, v, &trendRes)
+	res, err := t.client.get(t.ctx, TrendSearchURL, v, &trendRes)
 	if err != nil {
 		return nil, err
 	}
@@ -241,7 +249,7 @@ func (t *TrendService) GetRelated(req TrendRelatedRequest) (*TrendRelatedRespons
 	v.Set("contentId", strconv.Itoa(*req.ContentID))
 
 	var trendRes TrendRelatedResponse
-	res, err := t.client.get(TrendRelatedURL, v, &trendRes)
+	res, err := t.client.get(t.ctx, TrendRelatedURL, v, &trendRes)
 	if err != nil {
 		return nil, err
 	}

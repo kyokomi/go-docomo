@@ -1,6 +1,9 @@
 package docomo
 
-import "net/url"
+import (
+"net/url"
+"golang.org/x/net/context"
+)
 
 const (
 	// KnowledgeQAURL docomoAPIの知識Q&Aのmethod
@@ -19,6 +22,7 @@ const (
 
 // KnowledgeQAService API docs: https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_docs_id=6
 type KnowledgeQAService struct {
+	ctx context.Context
 	client *Client
 }
 
@@ -42,6 +46,11 @@ type KnowledgeQAResponse struct {
 	} `json:"message"`
 }
 
+func (d *KnowledgeQAService) WithContext(ctx context.Context) *KnowledgeQAService {
+	d.ctx = ctx
+	return d
+}
+
 // Success 質問成功
 func (q KnowledgeQAResponse) Success() bool {
 	return q.Code == OkResponseCode
@@ -54,7 +63,7 @@ func (q *KnowledgeQAService) Get(req KnowledgeQARequest) (*KnowledgeQAResponse, 
 	val.Set("q", req.QAText)
 
 	var knowRes KnowledgeQAResponse
-	res, err := q.client.get(KnowledgeQAURL, val, &knowRes)
+	res, err := q.client.get(q.ctx, KnowledgeQAURL, val, &knowRes)
 	if err != nil {
 		return nil, err
 	}
